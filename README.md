@@ -5,4 +5,4 @@ Leo Yu
 
 This contains all the documents pertaining to assignment 3
 
-[<img src=Assignment/soen331_OverallEFSM.png/>]
+<img src=Assignment/soen331_OverallEFSM.png/>
