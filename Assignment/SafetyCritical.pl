@@ -75,6 +75,21 @@ transition(psichk, ready, 'psi_ok', null, null).
 transition(monidle, 'regulate_environment', 'no_contagion', 'after(1 unit time)', null).
 transition(monidle, lockdown, 'contagion_alert', null, 'FACILTIY_ALERT_MSG, isLockdown=true').
 transition(lockdown, lockdown, null, 'isLockdown==true', null).
-transi
+transition(lockdown, monidle, pruge_succ, null, 'isLockdown=false').
+
+transition('prep_vpurge', 'alt_temp', 'initiate_purge', null, lock_doors).
+transition('prep_vpurge', 'alt_psi', 'initiate_purge', null, lock_doors).
+transition('alt_temp', 'risk_assess', 'tcyc_comp', null, null).
+transition('alt_psi', 'risk_assess', 'psicyc_comp', null, null).
+transition('risk_assess', 'alt_temp', null, 'risk>=1%', null).
+transition('risk_assess', 'alt_psi', null, 'risk>=1%', null).
+transition('risk_assess', 'safe_status', null, 'risk<1%', 'door_lock=false').
+
+transition('error_rcv', 'reset_module_data', null, 'err_protocol_def==false', null).
+transition('error_rcv', 'applicable_rescue', null, 'err_protocol_def==true', null).
+transition('reset_module_data', 'final', 'reset_to_stable', null, null).
+tranistion('applicable_rescue', 'final', 'apply_protocol_rescue', null, null).
+
+
 
 

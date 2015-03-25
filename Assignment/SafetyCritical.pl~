@@ -73,6 +73,8 @@ transition(tchk, psichk, 't_ok', null, null).
 transition(psichk, ready, 'psi_ok', null, null).
 
 transition(monidle, 'regulate_environment', 'no_contagion', 'after(1 unit time)', null).
-transition(monidle, lockdown, 'contagion_alert', 
+transition(monidle, lockdown, 'contagion_alert', null, 'FACILTIY_ALERT_MSG, isLockdown=true').
+transition(lockdown, lockdown, null, 'isLockdown==true', null).
+transi
 
 
