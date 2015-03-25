@@ -65,5 +65,16 @@ transition('error_diagnosis', 'safe_shutdown', null, 'retry >= 3', 'shutdown').
 transition('error_diagnosis', init, 'rety_init','redy < 3', 'retry++').
 transition('error_diagnosis', idle, 'idle_rescue', null, null).
 transition('error_diagnosis', monitoring, 'monitor_rescue', null, null).
-transition('safe_shutdown', dormant, 'sleep', null, null)
+transition('safe_shutdown', dormant, 'sleep', null, null).
+
+transition('boot_hw', senchk, 'hw_ok', null, null).
+transition(senchk, tchk, senok, null, null).
+transition(tchk, psichk, 't_ok', null, null).
+transition(psichk, ready, 'psi_ok', null, null).
+
+transition(monidle, 'regulate_environment', 'no_contagion', 'after(1 unit time)', null).
+transition(monidle, lockdown, 'contagion_alert', null, 'FACILTIY_ALERT_MSG, isLockdown=true').
+transition(lockdown, lockdown, null, 'isLockdown==true', null).
+transi
+
 
