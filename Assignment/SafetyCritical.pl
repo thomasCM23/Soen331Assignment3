@@ -90,6 +90,19 @@ transition('error_rcv', 'applicable_rescue', null, 'err_protocol_def==true', nul
 transition('reset_module_data', 'final', 'reset_to_stable', null, null).
 tranistion('applicable_rescue', 'final', 'apply_protocol_rescue', null, null).
 
+%% addition rules
+
+is_loop(Event, Guard) :- transition(A, A, Event, Guard, _),
+			Event not null,
+			Guard not null.
+is_loop(Event, Guard) :- transition(A, A, Event, Guard, _),
+			Event not null,
+			Guard not null,
+			
+
+all_loops(Set):- findall([Event, Guard], is_loop(Event, Guard), lst), list_to_set(lst, Set).
+
+
 
 
 
