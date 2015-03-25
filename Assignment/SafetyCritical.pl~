@@ -62,8 +62,5 @@ transition(idle, monitoring, 'beging_monitoring', null, null).
 transition(idle, 'error_diagnosis', 'idle_crash', null, 'idle_err_msg').
 transition(monitoring, 'error_diagnosis', 'monitor_crash', null, 'monitor_err_msg').
 transition('error_diagnosis', 'safe_shutdown', null, 'retry >= 3', 'shutdown').
-transition('error_diagnosis', init, 'rety_init','redy < 3', 'retry++').
-transition('error_diagnosis', idle, 'idle_rescue', null, null).
-transition('error_diagnosis', monitoring, 'monitor_rescue', null, null).
-transition('safe_shutdown', dormant, 'sleep', null, null)
+transition('error_diagnosis', init, 'rety_init', 
 
