@@ -95,14 +95,20 @@ tranistion('applicable_rescue', 'final', 'apply_protocol_rescue', null, null).
 is_loop(Event, Guard) :- transition(A, A, Event, Guard, _),
 			Event not null,
 			Guard not null.
-is_loop(Event, Guard) :- transition(A, A, Event, Guard, _),
-			Event not null,
-			Guard not null,
-			
 
-all_loops(Set):- findall([Event, Guard], is_loop(Event, Guard), lst), list_to_set(lst, Set).
-
-
-
-
-
+%%all_loops(Set):- findall([Event, Guard], is_loop(Event, Guard), lst), list_to_set(lst, Set).
+%%is_edge(Event, Guard):- transition(_,_, Event, Guard, _), Event not null, Guard not null.
+%%size(Length):-
+%%is_link(Event, Guard):-
+all_superstates(set):- findall(State, superstate(State, _), lst), list_to_set(lst, Set).
+ancestor(Ancestor, Descendant):- superstate(Ancestor, Descendant).
+ancestor(Ancestor, Descendant):- superstate(Ancestor, Child), ancestor(Child, Descendant).
+%%inherites_transition(State, List):-
+all_states(lst):- findall(State, state(State), lst).
+all_inti_states(l):- findall(State, initial_state(State, _), lst).
+%%get_starting_state(State):-
+state_is_reflective(State):- transition(State, State, _, _, _,).
+%%graph_is_reflective:-
+get_guards(Ret):- findall(Guard, transition(_, _, _, Guard, _), lst), list_to_set(lst, Ret).
+get_events(Ret):- findall(Event, transition(_, _, Event, _, _), lst), list_to_set(lst, Ret).
+get_actions(Ret) :- findall(Action, transition(_, _, _, _, Action), lst), list_to_set(lst, Ret).
