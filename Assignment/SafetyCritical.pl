@@ -1,3 +1,4 @@
+%% Facts
 %% states
 
 state(dormant).
@@ -90,25 +91,92 @@ transition('error_rcv', 'applicable_rescue', null, 'err_protocol_def==true', nul
 transition('reset_module_data', 'final', 'reset_to_stable', null, null).
 tranistion('applicable_rescue', 'final', 'apply_protocol_rescue', null, null).
 
-%% addition rules
+%% Rules
 
-is_loop(Event, Guard) :- transition(A, A, Event, Guard, _),
-			Event not null,
-			Guard not null.
+%% succeeds by finding a loop edge. We assume that an edge can be represented by a non-null event-guard pair.
+is_loop(Event, Guard) :- 
+	transition(A, A, Event, Guard, _),
+	Event not null
+	Guard not null 
 
-%%all_loops(Set):- findall([Event, Guard], is_loop(Event, Guard), lst), list_to_set(lst, Set).
-%%is_edge(Event, Guard):- transition(_,_, Event, Guard, _), Event not null, Guard not null.
-%%size(Length):-
-%%is_link(Event, Guard):-
-all_superstates(set):- findall(State, superstate(State, _), lst), list_to_set(lst, Set).
-ancestor(Ancestor, Descendant):- superstate(Ancestor, Descendant).
-ancestor(Ancestor, Descendant):- superstate(Ancestor, Child), ancestor(Child, Descendant).
-%%inherites_transition(State, List):-
-all_states(lst):- findall(State, state(State), lst).
-all_inti_states(l):- findall(State, initial_state(State, _), lst).
-%%get_starting_state(State):-
-state_is_reflective(State):- transition(State, State, _, _, _,).
+%% succeeds by returning a set of all loop edges.
+all_loops(Set):- 
+	findall(transition(_, _, Event, Guard, _), is_loop(Event, Guard), lst), 
+	list_to_set(lst, Set). 
+
+%% succeeds by finding an edge.
+
+is_edge(Event, Guard):- 
+	transition(_,_, Event, Guard, _), 
+	Event not null 
+	Guard not null
+
+%% succeeds by returning the size of the entire EFSM (given by the numberof its edges).
+size(Length):-
+	findall(transition(_, _, Event, Guard, _), is_edge(Event, Guard), lst), 
+	list_to_set(lst, Set),
+	length(Set, Length).
+
+%% succeeds by finding a link edge.
+
+is_link(Event, Guard):-
+	isEdge(Event, Guard),
+	transition(_, _, Event, Guard, _).
+
+%% succeeds by finding all superstates in the EFSM.
+
+all_superstates(set):- 
+	findall(State, superstate(State, _), lst), 
+	list_to_set(lst, Set).
+
+%% is a utility rule that succeeds by returning an ancestor to a given state.
+ancestor(Ancestor, Descendant):- 
+	superstate(Ancestor, Descendant).
+
+ancestor(Ancestor, Descendant):- 
+	superstate(Ancestor, Child), 
+	ancestor(Child, Descendant).
+
+%% succeeds by returning all transitions inherited by a given state.
+inherites_transition(State, List):-
+	findall(transition(State, _, _, _, _), transition(ancestor(_, State), _, _, _, _), List). 
+	
+%% succeeds by returning a list of all states.
+
+all_states(lst):- 
+	findall(State, state(State), lst).
+
+%% succeeds by returning a list of all starting states.
+
+all_inti_states(l):- 
+	findall(State, initial_state(State, _), lst).
+
+%% succeeds by returning the top-level starting state.
+
+%%get_starting_state(State):- 
+	transition(State)
+	initial_state(State, _)
+
+%% succeeds is State is reflexive.
+
+state_is_reflective(State):- 
+	transition(State, State, _, _, _,).
+
+%% succeeds if the entire EFSM is reflexive.
 %%graph_is_reflective:-
-get_guards(Ret):- findall(Guard, transition(_, _, _, Guard, _), lst), list_to_set(lst, Ret).
-get_events(Ret):- findall(Event, transition(_, _, Event, _, _), lst), list_to_set(lst, Ret).
-get_actions(Ret) :- findall(Action, transition(_, _, _, _, Action), lst), list_to_set(lst, Ret).
+	state_is_reflective([state(_)]).
+
+%%  succeeds by returning a set of all guards.
+get_guards(Ret):- 
+	findall(Guard, transition(_, _, _, Guard, _), lst), 
+	list_to_set(lst, Ret).
+
+%%  succeeds by returning a set of all events.
+get_events(Ret):- 
+	findall(Event, transition(_, _, Event, _, _), lst), 
+	list_to_set(lst, Ret).
+
+%%  succeeds by returning a set of all actions.
+get_actions(Ret) :- 
+	findall(Action, transition(_, _, _, _, Action), lst), 
+	list_to_set(lst, Ret).
